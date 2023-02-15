@@ -1,8 +1,14 @@
 package com.example.spring2.ex1;
 
-//구현 객체를 생성하고, 연결하는 책임을 가진 클래스
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+
+@Configuration// 설정 정보라는 의미         3.
 public class AppConfig {
-    /*                                     1.
+    //구현 객체를 생성하고, 연결하는 책임을 가진 클래스
+
+    /**                                   1.*/
+    /*
     public MemberService memberService(){
         return  new MeberServiceImpl(new MemoryMemberRepository());
     }
@@ -12,6 +18,7 @@ public class AppConfig {
     */
 
     /** 리팩토링                             2.*/
+    /*
     public MemberService memberService(){
         return  new MeberServiceImpl(memberRepository());
     }
@@ -26,4 +33,26 @@ public class AppConfig {
     public DiscountPolicy discountPolicy(){
         return new FixDiscountPolicy();
     }
+    */
+    /** 스프링으로 전환하기                    3.*/
+    // 스프링 컨테이너에 빈으로 등록한다.
+    @Bean
+    public MemberService memberService() {
+        return new MeberServiceImpl(memberRepository());
+    }
+
+    @Bean
+    public MemberRepository memberRepository() {
+        return new MemoryMemberRepository();
+    }
+
+    public OrderService orderService() {
+        return new OrderServiceImpl(memberRepository(), discountPolicy());
+    }
+
+    @Bean
+    public DiscountPolicy discountPolicy() {
+        return new RateDiscountPolicy();
+    }
+
 }
